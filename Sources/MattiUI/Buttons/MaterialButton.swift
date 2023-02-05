@@ -25,6 +25,17 @@ public struct MaterialButton: View {
     public var backgroundColor:Color = .black
     public var textColor:Color = .red
     public var icon: AnyView?
+    
+    public init(tittle: String, shape: MuiButtonShape, style: MuiButtonStyle, action: @escaping () -> Void, backgroundColor: Color, textColor: Color, icon: AnyView? = nil) {
+        self.tittle = tittle
+        self.shape = shape
+        self.style = style
+        self.action = action
+        self.backgroundColor = backgroundColor
+        self.textColor = textColor
+        self.icon = icon
+    }
+    
     public var body: some View {
         Button(action: action, label: {
             HStack {

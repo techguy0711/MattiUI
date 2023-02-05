@@ -14,6 +14,13 @@ public struct ContainerWithFloatingButton: View {
     public var bodyContent: AnyView
     public var action: () -> Void
     
+    public init(buttonContent: AnyView, backgroundColor: Color, bodyContent: AnyView, action: @escaping () -> Void) {
+        self.buttonContent = buttonContent
+        self.backgroundColor = backgroundColor
+        self.bodyContent = bodyContent
+        self.action = action
+    }
+    
     public var body: some View {
         ZStack {
             bodyContent

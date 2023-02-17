@@ -17,7 +17,7 @@ public enum MuiButtonStyle {
     case outline
 }
 @available(iOS 15, macOS 12.0, *)
-public struct MaterialButton<Content> : View where Content: View {
+public struct MaterialButton<Content: View>: View {
     public var tittle:String
     public var shape:MuiButtonShape = .rounded
     public var style:MuiButtonStyle = .fill

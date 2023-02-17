@@ -17,16 +17,16 @@ public enum MuiButtonStyle {
     case outline
 }
 @available(iOS 15, macOS 12.0, *)
-public struct MaterialButton: View {
+public struct MaterialButton<Content> : View where Content: View {
     public var tittle:String
     public var shape:MuiButtonShape = .rounded
     public var style:MuiButtonStyle = .fill
     public var action: () -> Void
     public var backgroundColor:Color = .black
     public var textColor:Color = .red
-    public var icon: AnyView?
+    @ViewBuilder public var icon: () -> Content
     
-    public init(tittle: String, shape: MuiButtonShape, style: MuiButtonStyle, action: @escaping () -> Void, backgroundColor: Color, textColor: Color, icon: AnyView? = nil) {
+    public init(tittle: String, shape: MuiButtonShape, style: MuiButtonStyle, action: @escaping () -> Void, backgroundColor: Color, textColor: Color, @ViewBuilder icon: @escaping () -> Content) {
         self.tittle = tittle
         self.shape = shape
         self.style = style
@@ -39,7 +39,8 @@ public struct MaterialButton: View {
     public var body: some View {
         Button(action: action, label: {
             HStack {
-                AnyView(icon.foregroundColor(textColor))
+                icon()
+                    .foregroundColor(textColor)
                     .padding(.leading)
                 Text(tittle)
                     .padding()

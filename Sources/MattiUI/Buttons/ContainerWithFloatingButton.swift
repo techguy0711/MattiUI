@@ -8,13 +8,13 @@
 import SwiftUI
 
 @available(iOS 15, macOS 12.0, *)
-public struct ContainerWithFloatingButton: View {
-    public var buttonContent:AnyView
+public struct ContainerWithFloatingButton<ButtonContent, BodyContent> : View where ButtonContent: View, BodyContent: View {
+    @ViewBuilder public var buttonContent: () -> ButtonContent
     public var backgroundColor:Color = .black
-    public var bodyContent: AnyView
+    @ViewBuilder public var bodyContent: () -> BodyContent
     public var action: () -> Void
     
-    public init(buttonContent: AnyView, backgroundColor: Color, bodyContent: AnyView, action: @escaping () -> Void) {
+    public init(@ViewBuilder buttonContent: @escaping () -> ButtonContent, backgroundColor: Color, @ViewBuilder bodyContent: @escaping () -> BodyContent, action: @escaping () -> Void) {
         self.buttonContent = buttonContent
         self.backgroundColor = backgroundColor
         self.bodyContent = bodyContent
@@ -23,9 +23,9 @@ public struct ContainerWithFloatingButton: View {
     
     public var body: some View {
         ZStack {
-            bodyContent
+            bodyContent()
             Button(action: action, label: {
-                buttonContent
+                buttonContent()
                     .padding()
             })
             .background(backgroundColor)

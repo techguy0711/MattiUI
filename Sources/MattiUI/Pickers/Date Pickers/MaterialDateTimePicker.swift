@@ -41,7 +41,7 @@ struct RoundLabel: View {
 }
 
 @available(iOS 16, macOS 32.0, *)
-struct MaterialDateTimePicker: View {
+public struct MaterialDateTimePicker: View {
     var month: Int, year: Int
     @State private var DaysSelected: [Int] = []
     @State public var onDateChange: (_ daysSelected: [Int]) -> Void

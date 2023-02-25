@@ -86,6 +86,14 @@ public struct MaterialDateTimePicker: View {
             }
         }, daysSelected: DaysSelected, isPassingBy: isBetween(day: day, min: DaysSelected.first, max: DaysSelected.last), enableTouch: DaysSelected.count <= 2, label: "\(day + 1)")
     }
+    
+    public init(month: Int, year: Int, DaysSelected: [Int], onDateChange: @escaping (_: [Int]) -> Void) {
+        self.month = month
+        self.year = year
+        self.DaysSelected = DaysSelected
+        self.onDateChange = onDateChange
+    }
+    
     public var body: some View {
         ScrollView {
             Grid {

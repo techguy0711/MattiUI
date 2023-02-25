@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 13.0, *)
+@available(iOS 16, macOS 13.0, *)
 struct RoundLabel: View {
     @State public var isSelected = false
     @State public var didSelect: (_ state: Bool) -> Void
@@ -40,7 +40,7 @@ struct RoundLabel: View {
     }
 }
 
-@available(iOS 15, macOS 32.0, *)
+@available(iOS 16, macOS 32.0, *)
 struct MaterialDateTimePicker: View {
     var month: Int, year: Int
     @State private var DaysSelected: [Int] = []

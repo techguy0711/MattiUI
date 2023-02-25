@@ -86,7 +86,7 @@ public struct MaterialDateTimePicker: View {
             }
         }, daysSelected: DaysSelected, isPassingBy: isBetween(day: day, min: DaysSelected.first, max: DaysSelected.last), enableTouch: DaysSelected.count <= 2, label: "\(day + 1)")
     }
-    var body: some View {
+    public var body: some View {
         ScrollView {
             Grid {
                 GridRow {

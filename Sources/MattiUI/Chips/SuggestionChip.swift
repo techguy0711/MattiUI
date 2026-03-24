@@ -44,8 +44,8 @@ public struct SuggestionChip: View {
                     .kerning(theme.typography.labelLarge.letterSpacing)
                     .foregroundColor(isEnabled ? theme.colorScheme.onSurfaceVariant : theme.colorScheme.onSurface.opacity(0.38))
             }
-            .padding(.horizontal, icon != nil ? 8 : 16)
-            .padding(.trailing, icon != nil ? 16 : 0)
+            .padding(.leading, icon != nil ? 8 : 16)
+            .padding(.trailing, 16)
             .frame(height: 32)
         }
         .background(

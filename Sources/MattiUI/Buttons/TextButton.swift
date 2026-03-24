@@ -43,7 +43,7 @@ public struct TextButton: View {
                     .font(theme.typography.labelLarge.font)
                     .kerning(theme.typography.labelLarge.letterSpacing)
             }
-            .padding(.horizontal, icon != nil ? 12 : 12)
+            .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .foregroundColor(isEnabled ? theme.colorScheme.primary : theme.colorScheme.onSurface.opacity(0.38))
         }

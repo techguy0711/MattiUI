@@ -54,7 +54,7 @@ public struct TopAppBar: View {
             Text(title)
                 .font(theme.typography.titleLarge.font)
                 .foregroundColor(theme.colorScheme.onSurface)
-                .frame(maxWidth: .infinity, alignment: navigationIcon == nil ? .leading : .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, navigationIcon == nil ? 16 : 4)
 
             ForEach(actions.indices, id: \.self) { i in

@@ -44,7 +44,7 @@ public struct AssistChip: View {
                     .kerning(theme.typography.labelLarge.letterSpacing)
                     .foregroundColor(isEnabled ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.opacity(0.38))
             }
-            .padding(.horizontal, icon != nil ? 8 : 16)
+            .padding(.leading, icon != nil ? 8 : 16)
             .padding(.trailing, 16)
             .frame(height: 32)
         }

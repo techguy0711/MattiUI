@@ -109,7 +109,6 @@ extension View {
     public func m3TextStyle(_ style: MaterialTextStyle) -> some View {
         self
             .font(style.font)
-            .lineSpacing(style.lineHeight - 20)
             .kerning(style.letterSpacing)
     }
 }

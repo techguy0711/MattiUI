@@ -9,7 +9,7 @@ on:
 jobs:
   package:
     name: Build & test MattiUI package
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
 
   sample-app:
     name: Build sample app (local package)
-    runs-on: macos-14
+    runs-on: macos-15
     needs: package
     steps:
       - uses: actions/checkout@v4

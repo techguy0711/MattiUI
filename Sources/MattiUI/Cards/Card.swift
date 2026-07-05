@@ -7,12 +7,22 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 12.0, *)
+/// A Material Design elevated card: a rounded, shadowed surface that adapts
+/// to light/dark mode, containing arbitrary content.
+@available(iOS 18, macOS 15.0, *)
 public struct Card <BodyContent> : View where  BodyContent: View {
+    /// The card's fixed width.
     public var width:CGFloat
+    /// The card's fixed height.
     public var height:CGFloat
+    /// The card's content.
     @ViewBuilder public var bodyContent: () -> BodyContent
-    
+
+    /// Creates a card of a fixed size.
+    /// - Parameters:
+    ///   - width: The card's width.
+    ///   - height: The card's height.
+    ///   - bodyContent: The card's content.
     public init(width: CGFloat, height: CGFloat, @ViewBuilder bodyContent: @escaping () -> BodyContent) {
         self.bodyContent = bodyContent
         self.width = width

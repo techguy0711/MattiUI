@@ -9,7 +9,7 @@ MattiUI is in early beta, please do not use in production just yet.
 MattiUI is a Material UI library for SwiftUI. At MattiUI we write material design components using Apple's own SwiftUI, which means everything is just the right amount of Apple design and Material design. Our goal is to bring Material design to SwiftUI without interrupting the native feel of SwiftUI and Apple's design styles.
 
 # Requirements
-iOS 15+ / macOS 12+, Swift 5.7+.
+iOS 18+ / macOS 15+, Swift 6.0 tools (targets build in Swift 5 language mode).
 
 # Running tests locally
 ```

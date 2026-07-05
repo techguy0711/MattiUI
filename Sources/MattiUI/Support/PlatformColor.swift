@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 12.0, *)
+@available(iOS 18, macOS 15.0, *)
 extension Color {
     /// A surface/background color that adapts to light/dark mode on both
     /// iOS and macOS. Components should use this instead of hardcoding

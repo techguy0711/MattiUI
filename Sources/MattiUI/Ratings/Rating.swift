@@ -7,7 +7,16 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 12.0, *)
+/// A row of tappable stars for capturing a 1-to-`maximum` rating.
+///
+/// ```swift
+/// @State var rating = 0
+/// Rating(value: $rating) { stars in print("\(stars) stars") }
+/// ```
+///
+/// Also supports VoiceOver's adjustable action (swipe up/down) to change the
+/// value without needing to target an individual star.
+@available(iOS 18, macOS 15.0, *)
 public struct Rating: View {
     /// Previously this was `@State public var values: Int = 0`, seeded once
     /// from `init` and never able to reflect changes made by the parent
@@ -16,9 +25,16 @@ public struct Rating: View {
     /// value the single source of truth, as it should be for a control like
     /// this.
     @Binding public var value: Int
+    /// The number of stars shown. Defaults to 5.
     public var maximum: Int
+    /// Called whenever the selected value changes.
     public var onChange: ((Int) -> Void)?
 
+    /// Creates a star rating control.
+    /// - Parameters:
+    ///   - value: A binding to the current rating (0...`maximum`).
+    ///   - maximum: The number of stars shown. Defaults to 5.
+    ///   - onChange: Called whenever the selected value changes.
     public init(value: Binding<Int>, maximum: Int = 5, onChange: ((Int) -> Void)? = nil) {
         self._value = value
         self.maximum = maximum

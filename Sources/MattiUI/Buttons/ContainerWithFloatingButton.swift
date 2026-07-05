@@ -7,13 +7,33 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 12.0, *)
+/// Wraps arbitrary content in a screen-level container with a Material
+/// Floating Action Button anchored to the bottom-trailing corner.
+///
+/// ```swift
+/// ContainerWithFloatingButton(buttonContent: { Image(systemName: "plus") }, bodyContent: {
+///     MyScreenContent()
+/// }) {
+///     // FAB tapped
+/// }
+/// ```
+@available(iOS 18, macOS 15.0, *)
 public struct ContainerWithFloatingButton<ButtonContent, BodyContent> : View where ButtonContent: View, BodyContent: View {
+    /// Content shown inside the circular FAB (typically an SF Symbol `Image`).
     @ViewBuilder public var buttonContent: () -> ButtonContent
+    /// The FAB's fill color. Defaults to `.accentColor`.
     public var backgroundColor: Color
+    /// The main screen content the FAB floats above.
     @ViewBuilder public var bodyContent: () -> BodyContent
+    /// Called when the FAB is tapped.
     public var action: () -> Void
 
+    /// Creates a container with a floating action button.
+    /// - Parameters:
+    ///   - buttonContent: Content shown inside the circular FAB.
+    ///   - backgroundColor: The FAB's fill color. Defaults to `.accentColor`.
+    ///   - bodyContent: The main screen content.
+    ///   - action: Called when the FAB is tapped.
     public init(
         @ViewBuilder buttonContent: @escaping () -> ButtonContent,
         backgroundColor: Color = .accentColor,

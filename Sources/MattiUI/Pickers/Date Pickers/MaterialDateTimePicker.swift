@@ -17,7 +17,7 @@ import SwiftUI
 /// parent's actual `daysSelected` array. Making this a plain, stateless view
 /// driven entirely by parameters from the parent (the single source of
 /// truth) fixes that class of bug.
-@available(iOS 15, macOS 12.0, *)
+@available(iOS 18, macOS 15.0, *)
 private struct RoundLabel: View {
     let day: Int
     let isSelected: Bool
@@ -48,15 +48,33 @@ private struct RoundLabel: View {
     }
 }
 
-@available(iOS 15, macOS 12.0, *)
+/// A calendar grid for selecting a date range within a single month.
+///
+/// Tap a day to start a range, tap a second day to complete it — `onDateChange`
+/// fires with both days (sorted) once exactly two are selected. Tapping either
+/// selected day again clears it.
+///
+/// ```swift
+/// MaterialDateTimePicker(month: 7, year: 2026) { days in print(days) }
+/// ```
+@available(iOS 18, macOS 15.0, *)
 public struct MaterialDateTimePicker: View {
+    /// 1-indexed month (1 = January).
     public var month: Int
+    /// Four-digit year.
     public var year: Int
     @State private var daysSelected: [Int]
+    /// Called with the sorted `[start, end]` days once a two-day range is selected.
     public var onDateChange: (_ daysSelected: [Int]) -> Void
 
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
 
+    /// Creates a date range picker for the given month.
+    /// - Parameters:
+    ///   - month: 1-indexed month (1 = January).
+    ///   - year: Four-digit year.
+    ///   - daysSelected: Initial selection. Defaults to none.
+    ///   - onDateChange: Called with the sorted selected range once two days are picked.
     public init(month: Int, year: Int, daysSelected: [Int] = [], onDateChange: @escaping (_ daysSelected: [Int]) -> Void) {
         self.month = month
         self.year = year

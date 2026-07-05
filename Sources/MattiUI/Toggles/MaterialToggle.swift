@@ -7,19 +7,32 @@
 
 import SwiftUI
 
-@available(iOS 15, macOS 12.0, *)
+/// A Material Design-styled on/off switch.
+///
+/// ```swift
+/// @State var isOn = false
+/// MaterialToggle(color: .green, isOn: $isOn) { newValue in print(newValue) }
+/// ```
+@available(iOS 18, macOS 15.0, *)
 public struct MaterialToggle: View {
+    /// The track/thumb tint color.
     public var color: Color
     /// Previously `@State var isOn: Bool = false`, seeded once from `init`
     /// and disconnected from the parent afterward. `@Binding` makes the
     /// parent the source of truth so external state changes are reflected.
     @Binding public var isOn: Bool
+    /// Called whenever the toggle is flipped.
     public var didChange: ((Bool) -> Void)?
 
     private let trackWidth: CGFloat = 50
     private let trackHeight: CGFloat = 30
     private let thumbDiameter: CGFloat = 26
 
+    /// Creates a Material toggle switch.
+    /// - Parameters:
+    ///   - color: The track/thumb tint color. Defaults to `.accentColor`.
+    ///   - isOn: A binding to the on/off state.
+    ///   - didChange: Called whenever the toggle is flipped.
     public init(color: Color = .accentColor, isOn: Binding<Bool>, didChange: ((Bool) -> Void)? = nil) {
         self.color = color
         self._isOn = isOn

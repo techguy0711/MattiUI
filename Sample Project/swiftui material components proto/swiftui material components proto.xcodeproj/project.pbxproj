@@ -119,7 +119,7 @@
 			);
 			mainGroup = A9749A7D298B529800965E83;
 			packageReferences = (
-				A9170891298F36CD004EE0B3 /* XCRemoteSwiftPackageReference "MattiUI" */,
+				A9170891298F36CD004EE0B3 /* XCLocalSwiftPackageReference "../../" */,
 			);
 			productRefGroup = A9749A87298B529800965E83 /* Products */;
 			projectDirPath = "";
@@ -363,21 +363,17 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		A9170891298F36CD004EE0B3 /* XCRemoteSwiftPackageReference "MattiUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/techguy0711/MattiUI";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		A9170891298F36CD004EE0B3 /* XCLocalSwiftPackageReference "../../" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../..;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A9170892298F36CD004EE0B3 /* MattiUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A9170891298F36CD004EE0B3 /* XCRemoteSwiftPackageReference "MattiUI" */;
+			package = A9170891298F36CD004EE0B3 /* XCLocalSwiftPackageReference "../../" */;
 			productName = MattiUI;
 		};
 /* End XCSwiftPackageProductDependency section */

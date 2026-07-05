@@ -1,150 +1,135 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Kristhian De Oliveira on 2/25/23.
 //
 
 import SwiftUI
 
-@available(iOS 16, macOS 13.0, *)
-struct RoundLabel: View {
-    @State public var isSelected = false
-    @State public var didSelect: (_ state: Bool) -> Void
-    var daysSelected: [Int]
-    var isPassingBy: Bool
-    var enableTouch: Bool
-    var label:String
-    private func shapeStyle() -> Color {
-        if isPassingBy {
-            return .blue.opacity(0.3)
-        }
-        return isSelected ? .black : .white
+/// A single day cell in `MaterialDateTimePicker`.
+///
+/// Previously this view owned `@State public var isSelected` and
+/// `@State public var didSelect` (a closure stored in `@State`, which isn't
+/// what `@State` is for). Because the view had no stable identity tied to
+/// its `day`, SwiftUI could reuse/re-initialize these incorrectly across
+/// re-renders, and the "selected" flag could drift out of sync with the
+/// parent's actual `daysSelected` array. Making this a plain, stateless view
+/// driven entirely by parameters from the parent (the single source of
+/// truth) fixes that class of bug.
+@available(iOS 15, macOS 12.0, *)
+private struct RoundLabel: View {
+    let day: Int
+    let isSelected: Bool
+    let isPassingBy: Bool
+    let enableTouch: Bool
+    let onToggle: (_ isSelected: Bool) -> Void
+
+    private var fillColor: Color {
+        if isPassingBy { return .blue.opacity(0.3) }
+        return isSelected ? .accentColor : Color.gray.opacity(0.15)
     }
+
     var body: some View {
         ZStack {
             Circle()
-                .foregroundColor(shapeStyle())
-            Text(label)
-                .foregroundColor(isSelected ? .white : .black)
+                .foregroundColor(fillColor)
+            Text("\(day)")
+                .foregroundColor(isSelected ? .white : .primary)
         }
-        .frame(width: 30, height: 30)
+        .frame(width: 32, height: 32)
+        .contentShape(Circle())
         .onTapGesture {
-            if daysSelected.count > 1 {
-                isSelected = false
-            } else {
-                isSelected.toggle()
-            }
-            didSelect(isSelected && enableTouch)
+            guard enableTouch else { return }
+            onToggle(!isSelected)
         }
+        .accessibilityLabel("Day \(day)")
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 }
 
-@available(iOS 16, macOS 32.0, *)
+@available(iOS 15, macOS 12.0, *)
 public struct MaterialDateTimePicker: View {
-    var month: Int, year: Int
-    @State private var DaysSelected: [Int] = []
-    @State public var onDateChange: (_ daysSelected: [Int]) -> Void
-    func isBetween(day: Int?, min:Int?, max:Int?) -> Bool{
-        guard var min = min else { return false }
-        guard var max = max else { return false }
-        guard let day = day else { return false }
-        
-        //If user selects dates backward range reverse it to correc sequence
-        if min > max {
-            let tempMax = max
-            max = min
-            min = tempMax
-        }
-        
-        let range = min...max
-        for value in range {
-            if day == value {
-                if day != min {
-                    if day != max {
-                        return true
-                    }
-                }
-            }
-        }
-        return false
-    }
-    private func cell(day: Int) -> any View {
-        RoundLabel(didSelect: { state in
-            if state == true {
-                DaysSelected.append(day)
-            } else {
-                DaysSelected.removeAll { selectedDay in
-                    selectedDay == day
-                }
-            }
-            //Only call onDateChange when range is complete
-            if DaysSelected.count == 2 {
-                onDateChange(DaysSelected.map({ DayIn in
-                    return DayIn + 1
-                }).sorted())
-            }
-        }, daysSelected: DaysSelected, isPassingBy: isBetween(day: day, min: DaysSelected.first, max: DaysSelected.last), enableTouch: DaysSelected.count <= 2, label: "\(day + 1)")
-    }
-    
-    public init(month: Int, year: Int, DaysSelected: [Int], onDateChange: @escaping (_: [Int]) -> Void) {
+    public var month: Int
+    public var year: Int
+    @State private var daysSelected: [Int]
+    public var onDateChange: (_ daysSelected: [Int]) -> Void
+
+    private let columns = Array(repeating: GridItem(.flexible()), count: 7)
+
+    public init(month: Int, year: Int, daysSelected: [Int] = [], onDateChange: @escaping (_ daysSelected: [Int]) -> Void) {
         self.month = month
         self.year = year
-        self.DaysSelected = DaysSelected
+        self._daysSelected = State(initialValue: daysSelected)
         self.onDateChange = onDateChange
     }
-    
+
+    /// True for days strictly between the first and last selected day
+    /// (exclusive), used to highlight the range being spanned.
+    /// Internal (not private) so it's covered directly by unit tests via
+    /// `@testable import` — this doesn't change the public API since
+    /// `internal` is still invisible to consumers of the library.
+    func isBetween(day: Int, min: Int?, max: Int?) -> Bool {
+        guard let a = min, let b = max, a != b else { return false }
+        let lower = Swift.min(a, b)
+        let upper = Swift.max(a, b)
+        return day > lower && day < upper
+    }
+
     public var body: some View {
-        ScrollView {
-            Grid {
-                GridRow {
-                    ForEach(0..<daysIn(month: month, year: year), id: \.self) { day in
-                        if 0...4 ~= day {
-                            AnyView(cell(day: day))
-                        }
+        // Previously the calendar was laid out as 5 fixed GridRows, each
+        // showing a hardcoded slice of day numbers (0...4, 5...11, 12...18...).
+        // That assumes every month starts on the same weekday, so days never
+        // lined up under the correct weekday column for most months. A
+        // LazyVGrid with 7 columns, padded at the front with blank cells equal
+        // to the month's starting weekday offset, lays days out correctly for
+        // any month/year.
+        LazyVGrid(columns: columns, spacing: 8) {
+            ForEach(0..<leadingBlankDays, id: \.self) { index in
+                Color.clear
+                    .frame(height: 32)
+                    .accessibilityHidden(true)
+                    .id("blank-\(index)")
+            }
+            ForEach(1...max(totalDaysInMonth, 1), id: \.self) { day in
+                RoundLabel(
+                    day: day,
+                    isSelected: daysSelected.contains(day),
+                    isPassingBy: isBetween(day: day, min: daysSelected.first, max: daysSelected.last),
+                    enableTouch: daysSelected.count < 2 || daysSelected.contains(day)
+                ) { isSelected in
+                    if isSelected {
+                        daysSelected.append(day)
+                    } else {
+                        daysSelected.removeAll { $0 == day }
                     }
-                }
-                GridRow {
-                    ForEach(0..<daysIn(month: month, year: year), id: \.self) { day in
-                        if 5...11 ~= day {
-                            AnyView(cell(day: day))
-                        }
-                    }
-                }
-                GridRow {
-                    ForEach(0..<daysIn(month: month, year: year), id: \.self) { day in
-                        if 12...18 ~= day {
-                            AnyView(cell(day: day))
-                        }
-                    }
-                }
-                GridRow {
-                    ForEach(0..<daysIn(month: month, year: year), id: \.self) { day in
-                        if 19...25 ~= day {
-                            AnyView(cell(day: day))
-                        }
-                    }
-                }
-                GridRow {
-                    ForEach(0..<daysIn(month: month, year: year), id: \.self) { day in
-                        if 26...31 ~= day {
-                            AnyView(cell(day: day))
-                        }
+                    if daysSelected.count == 2 {
+                        onDateChange(daysSelected.sorted())
                     }
                 }
             }
         }
     }
-    private func daysIn(month: Int, year: Int) -> Int {
-        let date = Date.startOfMonth(for: month, of: year)
-        let calendar = Calendar.current
-        
-        // Calculate start and end of the current year (or month with `.month`):
-        let interval = calendar.dateInterval(of: .month, for: date!)! //change year it will no of days in a year , change it to month it will give no of days in a current month
-        
-        // Compute difference in days:
-        let days = calendar.dateComponents([.day], from: interval.start, to: interval.end).day!
-        return days
+
+    /// Number of days in `month`/`year`. Previously this force-unwrapped both
+    /// `Date.startOfMonth(...)` and `Calendar.dateInterval(...)`, which would
+    /// crash on an invalid month (e.g. `month: 13`). Now returns `0` instead
+    /// of crashing. Internal (not private) for unit test coverage.
+    var totalDaysInMonth: Int {
+        guard let date = Date.startOfMonth(for: month, of: year),
+              let range = Calendar.current.range(of: .day, in: .month, for: date) else {
+            return 0
+        }
+        return range.count
+    }
+
+    /// Number of empty leading cells needed so day 1 lands under the correct
+    /// weekday column (`Calendar.component(.weekday:)` is 1 = Sunday...7 =
+    /// Saturday, so subtracting 1 gives a 0-based offset). Internal (not
+    /// private) for unit test coverage.
+    var leadingBlankDays: Int {
+        guard let date = Date.startOfMonth(for: month, of: year) else { return 0 }
+        return Calendar.current.component(.weekday, from: date) - 1
     }
 }
 
@@ -153,4 +138,3 @@ extension Date {
         DateComponents(calendar: calendar, year: year, month: month).date
     }
 }
-

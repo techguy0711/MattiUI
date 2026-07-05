@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  package:
+    name: Build & test MattiUI package
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Swift build
+        run: swift build
+
+      - name: Swift test
+        run: swift test
+
+  sample-app:
+    name: Build sample app (local package)
+    runs-on: macos-14
+    needs: package
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build sample app for iOS Simulator
+        run: |
+          xcodebuild build \
+            -project "Sample Project/swiftui material components proto/swiftui material components proto.xcodeproj" \
+            -scheme "swiftui material components proto" \
+            -destination "generic/platform=iOS Simulator" \
+            CODE_SIGNING_ALLOWED=NO

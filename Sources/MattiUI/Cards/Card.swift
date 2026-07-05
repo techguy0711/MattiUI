@@ -20,8 +20,11 @@ public struct Card <BodyContent> : View where  BodyContent: View {
     }
     public var body: some View {
         ZStack {
+            // Previously hardcoded `.fill(.white)`, which produced a bright
+            // white card even in dark mode. `.mattiSurface` adapts per
+            // platform and color scheme.
             RoundedRectangle(cornerRadius: 25, style: .continuous)
-                .fill(.white)
+                .fill(Color.mattiSurface)
                 .shadow(radius: 10)
             VStack {
                 bodyContent()

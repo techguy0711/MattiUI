@@ -135,6 +135,7 @@ public struct MaterialDateTimePicker: View {
 
 extension Date {
     static func startOfMonth(for month: Int, of year: Int, using calendar: Calendar = .current) -> Date? {
-        DateComponents(calendar: calendar, year: year, month: month).date
+        guard (1...12).contains(month) else { return nil }
+        return DateComponents(calendar: calendar, year: year, month: month).date
     }
 }
